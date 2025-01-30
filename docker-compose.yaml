@@ -72,7 +72,8 @@ services:
     environment:
       CONTROL_CENTER_BOOTSTRAP_SERVERS: kafka:9092
       CONTROL_CENTER_ZOOKEEPER_CONNECT: zookeeper:2181
-      CONTROL_CENTER_CONNECT_CLUSTER: kafka-connect:8083
-
+      CONTROL_CENTER_CONNECT_CLUSTER: http://kafka-connect:8083
+      CONTROL_CENTER_UI_ENABLED: "true"
+      CONTROL_CENTER_REPLICATION_FACTOR: "1"
 volumes:
   postgres_data:
