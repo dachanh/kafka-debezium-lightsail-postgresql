@@ -16,10 +16,9 @@ type CDCEvent struct {
 }
 
 func main() {
-	// Kafka configuration
 	kafkaReader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:  []string{"localhost:9092"},
-		Topic:    "dbserver1.public.users",
+		Topic:    "CDC_POSTGRES",
 		GroupID:  "cdc-consumer-group",
 		MaxBytes: 10e6, // 10MB max per message
 	})

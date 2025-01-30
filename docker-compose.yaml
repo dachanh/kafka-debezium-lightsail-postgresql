@@ -1,4 +1,8 @@
 version: '3.8'
+networks:
+  kafka_network:
+    driver: bridge
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
@@ -8,6 +12,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka_network
 
   kafka:
     image: confluentinc/cp-kafka:7.4.0
@@ -20,7 +26,8 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
+    networks:
+      - kafka_network
   postgres:
     image: postgres:15
     container_name: postgres
@@ -32,6 +39,8 @@ services:
       POSTGRES_DB: debezium_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - kafka_network
 
   connect:
     image: debezium/connect:2.3
@@ -60,6 +69,8 @@ services:
       CONNECT_LOG4J_LOGGERS: org.reflections=ERROR
     volumes:
       - ./kafka-connect-plugins:/kafka/connect
+    networks:
+      - kafka_network
 
   control-center:
     image: confluentinc/cp-enterprise-control-center:7.4.0
@@ -75,5 +86,7 @@ services:
       CONTROL_CENTER_CONNECT_CLUSTER: http://kafka-connect:8083
       CONTROL_CENTER_UI_ENABLED: "true"
       CONTROL_CENTER_REPLICATION_FACTOR: "1"
+    networks:
+      - kafka_network
 volumes:
   postgres_data:
