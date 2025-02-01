@@ -33,6 +33,7 @@ curl -X POST "$KAFKA_CONNECT_URL" -H "Content-Type: application/json" -d '{
     "publication.name": "dbz_publication",
     "database.history.kafka.bootstrap.servers": "kafka:9092",
     "database.history.kafka.topic": "schema-changes.users",
+    "topic.prefix": "CDC_POSTGRES",
     "transforms": "unwrap",
     "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
     "key.converter": "org.apache.kafka.connect.json.JsonConverter",
