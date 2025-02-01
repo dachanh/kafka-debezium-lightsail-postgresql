@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Kafka Connect REST API URL
-KAFKA_CONNECT_URL="http://localhost:8083/connectors"
+KAFKA_CONNECT_URL="http://127.0.0.1:8083/connectors"
 
 # Connector Name
 CONNECTOR_NAME="postgres-cdc-connector"
