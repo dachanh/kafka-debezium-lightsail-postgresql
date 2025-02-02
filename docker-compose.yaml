@@ -18,6 +18,7 @@ services:
   kafka:
     image: confluentinc/cp-kafka:7.4.0
     container_name: kafka
+    restart: always
     ports:
       - "9092:9092"
       - "29092:29092" # New port for internal Docker communication
@@ -54,7 +55,7 @@ services:
       - zookeeper
       - postgres
     environment:
-      BOOTSTRAP_SERVERS: kafka:9092
+      BOOTSTRAP_SERVERS: kafka:29092
       GROUP_ID: 1
       CONFIG_STORAGE_TOPIC: connect-configs
       OFFSET_STORAGE_TOPIC: connect-offsets
@@ -63,12 +64,14 @@ services:
       CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
-      CONNECT_PLUGIN_PATH: /kafka/connect
+      CONNECT_PLUGIN_PATH: /usr/share/java,/kafka/connect
       CONNECT_REST_PORT: 8083
       CONNECT_PRODUCER_INTERCEPTORS: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
       CONNECT_CONSUMER_INTERCEPTORS: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
       CONNECT_LOG4J_LOGGERS: org.reflections=ERROR
+      CONNECT_REST_ADVERTISED_HOST_NAME: "kafka-connect"
+      CONNECT_REST_HOST_NAME: "kafka-connect"
+      LOG4J_CONFIGURATION_FILE: /kafka/config/log4j.properties
     volumes:
       - ./kafka-connect-plugins:/kafka/connect
     networks:
@@ -77,13 +80,14 @@ services:
   control-center:
     image: confluentinc/cp-enterprise-control-center:7.4.0
     container_name: control-center
+    restart: always
     depends_on:
       - kafka
       - zookeeper
     ports:
       - "9021:9021"
     environment:
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: kafka:9092
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: kafka:29092
       CONTROL_CENTER_ZOOKEEPER_CONNECT: zookeeper:2181
       CONTROL_CENTER_CONNECT_CLUSTER: http://kafka-connect:8083
       CONTROL_CENTER_UI_ENABLED: "true"

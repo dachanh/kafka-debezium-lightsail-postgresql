@@ -9,11 +9,14 @@ CONNECTOR_NAME="postgres-cdc-connector"
 # Check if the connector already exists
 EXISTING_CONNECTOR=$(curl -s -o /dev/null -w "%{http_code}" "$KAFKA_CONNECT_URL/$CONNECTOR_NAME")
 
+echo $EXISTING_CONNECTOR
 if [ "$EXISTING_CONNECTOR" -eq 200 ]; then
   echo "Connector $CONNECTOR_NAME already exists. Deleting it first..."
   curl -X DELETE "$KAFKA_CONNECT_URL/$CONNECTOR_NAME"
   sleep 5
 fi
+
+echo $KAFKA_CONNECT_URL
 
 # Register the new Debezium Connector
 echo "Registering Debezium Connector for PostgreSQL..."
@@ -30,7 +33,7 @@ curl -X POST "$KAFKA_CONNECT_URL" -H "Content-Type: application/json" -d '{
     "table.include.list": "public.users",
     "plugin.name": "pgoutput",
     "slot.name": "debezium_slot",
-    "publication.name": "dbz_publication",
+    "publication.name": "dbz_publication_users",
     "database.history.kafka.bootstrap.servers": "kafka:9092",
     "database.history.kafka.topic": "schema-changes.users",
     "topic.prefix": "CDC_POSTGRES",

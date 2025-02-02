@@ -7,7 +7,24 @@
 curl -X GET http://localhost:8083/connector-plugins
 ```
 
+## Create Publication
 
+```
+CREATE PUBLICATION dbz_publication_users FOR TABLE users  WITH (publish = 'insert, update, delete');
+```
+
+## List connectors
+
+```
+curl -X GET "http://127.0.0.1:8083/connectors"
+```
+
+
+## check status of connector
+
+```
+curl -X GET http://127.0.0.1:8083/connectors/postgres-cdc-connector/status
+```
 
 ## fix error 
 
@@ -21,3 +38,4 @@ solution:
 ```
    ALTER SYSTEM SET wal_level = 'logical';
 ```
+
